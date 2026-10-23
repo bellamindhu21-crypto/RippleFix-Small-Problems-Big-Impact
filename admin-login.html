@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Portal | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body class="auth-page admin-auth">
+
+
+    <div class="auth-layout">
+
+
+        <div class="auth-left admin-left">
+
+            <div class="auth-brand">
+                🌊 Ripple<span>Fix</span>
+            </div>
+
+            <div class="authority-badge">
+                🛡 AUTHORITY PORTAL
+            </div>
+
+            <h1>
+                Manage.
+                <span>Resolve.</span>
+                <br>
+                Improve.
+            </h1>
+
+            <p>
+                Monitor citizen reports and turn
+                community complaints into real-world action.
+            </p>
+
+            <div class="auth-points">
+
+                <div>✓ View all reported problems</div>
+                <div>✓ Prioritize important issues</div>
+                <div>✓ Update issue status</div>
+                <div>✓ Mark resolved problems</div>
+
+            </div>
+
+        </div>
+
+
+        <div class="auth-card admin-card">
+
+            <div class="form-icon">
+                🛡️
+            </div>
+
+            <div class="form-label admin-label">
+                ADMINISTRATOR
+            </div>
+
+            <h2>
+                Authority Login
+            </h2>
+
+            <p>
+                Authorized personnel only.
+            </p>
+
+
+            <form id="adminForm">
+
+                <label>
+                    Admin Username
+                </label>
+
+                <input
+                    type="text"
+                    id="adminUsername"
+                    placeholder="Enter admin username"
+                    required>
+
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Enter password"
+                    required>
+
+
+                <button type="submit"
+                        class="form-submit admin-submit">
+
+                    Enter Dashboard →
+
+                </button>
+
+            </form>
+
+
+            <div class="demo-login">
+
+                DEMO ADMIN
+
+                <br>
+
+                Username:
+                <b>admin</b>
+
+                <br>
+
+                Password:
+                <b>admin123</b>
+
+            </div>
+
+
+            <a href="index.html"
+               class="back-link">
+
+                ← Back to RippleFix
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+<script>
+document.getElementById("adminForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById("adminUsername").value.trim();
+    const password = document.getElementById("adminPassword").value;
+
+    try {
+        // Authenticate through Flask, not only localStorage.
+        const response = await fetch("http://127.0.0.1:5000/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                identifier: username,
+                password: password
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.error || "Admin login failed.");
+            return;
+        }
+
+        // Only allow accounts marked admin in SQLite.
+        if (!result.user || result.user.role !== "admin") {
+            alert("This account is not an administrator. Please use an authorized admin account.");
+            return;
+        }
+
+        localStorage.setItem("ripplefixAdmin", "true");
+        localStorage.setItem("ripplefixRole", "admin");
+
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        console.error("Admin login error:", error);
+        alert("Cannot connect to Flask. Make sure app.py is running.");
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Home | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌊 <span>RippleFix</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="home.html"
+           class="active">
+            Home
+        </a>
+
+        <a href="report.html">
+            Report
+        </a>
+
+        <a href="issues.html">
+            Issues
+        </a>
+
+        <a href="map.html">
+            Map
+        </a>
+
+    </div>
+
+    <button
+        onclick="logout()"
+        class="logout-btn">
+
+        Logout
+
+    </button>
+
+</nav>
+
+
+<section class="home-hero">
+
+    <div>
+
+        <span class="eyebrow">
+            WELCOME TO RIPPLEFIX
+        </span>
+
+        <h1>
+            Hello,
+            <span id="userName">
+                Citizen
+            </span> 👋
+        </h1>
+
+        <p>
+            See a problem?
+            Report it.
+            Start the ripple.
+        </p>
+
+
+        <div class="home-buttons">
+
+            <a href="report.html"
+               class="primary-btn">
+
+                + Report an Issue
+
+            </a>
+
+            <a href="issues.html"
+               class="secondary-btn">
+
+                Explore Issues
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="home-ripple">
+
+        🌊
+
+        <div>
+            Your voice
+            creates change.
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="quick-section">
+
+    <div class="quick-card">
+
+        <div>
+            📝
+        </div>
+
+        <h3>
+            Report
+        </h3>
+
+        <p>
+            Tell the community about a problem.
+        </p>
+
+        <a href="report.html">
+            Report Now →
+        </a>
+
+    </div>
+
+
+    <div class="quick-card">
+
+        <div>
+            🗺️
+        </div>
+
+        <h3>
+            Live Map
+        </h3>
+
+        <p>
+            Explore civic problems around you.
+        </p>
+
+        <a href="map.html">
+            Open Map →
+        </a>
+
+    </div>
+
+
+    <div class="quick-card">
+
+        <div>
+            📊
+        </div>
+
+        <h3>
+            Community Issues
+        </h3>
+
+        <p>
+            See what your community is reporting.
+        </p>
+
+        <a href="issues.html">
+            View Issues →
+        </a>
+
+    </div>
+
+</section>
+
+
+<script src="js/common.js"></script>
+
+<script>
+
+protectCitizenPage();
+
+showUser();
+
+</script>
+
+</body>
+</html>

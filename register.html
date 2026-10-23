@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body class="auth-page">
+
+
+    <div class="auth-layout">
+
+
+        <div class="auth-left">
+
+            <div class="auth-brand">
+                🌊 Ripple<span>Fix</span>
+            </div>
+
+            <h1>
+                Start your
+                <span>ripple.</span>
+            </h1>
+
+            <p>
+                Join your community and help report
+                the problems that matter.
+            </p>
+
+            <div class="auth-points">
+
+                <div>✓ Report civic problems</div>
+                <div>✓ Upload photo evidence</div>
+                <div>✓ Track your reports</div>
+                <div>✓ Support your community</div>
+
+            </div>
+
+        </div>
+
+
+        <div class="auth-card">
+
+            <div class="form-icon">
+                ✨
+            </div>
+
+            <div class="form-label">
+                CITIZEN REGISTRATION
+            </div>
+
+            <h2>
+                Create Account
+            </h2>
+
+            <p>
+                Create your account to get started.
+            </p>
+
+
+            <form id="registerForm">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required>
+
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Choose a username"
+                    required>
+
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required>
+
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create password"
+                    required>
+
+
+                <label>
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    required>
+
+
+                <button type="submit"
+                        class="form-submit">
+
+                    Create My Account →
+
+                </button>
+
+            </form>
+
+
+            <p class="form-bottom">
+
+                Already have an account?
+
+                <a href="citizen-login.html">
+                    Login
+                </a>
+
+            </p>
+
+
+            <a href="index.html"
+               class="back-link">
+
+                ← Back to RippleFix
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    if (password.length < 8) {
+        alert("Password must contain at least 8 characters.");
+        return;
+    }
+
+    const submitButton = document.querySelector("#registerForm button[type='submit']");
+    submitButton.disabled = true;
+    submitButton.textContent = "Creating account...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                name: name,
+                username: username,
+                email: email,
+                password: password
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.error || "Registration failed.");
+            return;
+        }
+
+        alert("Account created successfully! Please log in.");
+        window.location.href = "citizen-login.html";
+
+    } catch (error) {
+        console.error("Registration error:", error);
+        alert("Cannot connect to the backend. Make sure Flask is running.");
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Create My Account →";
+    }
+});
+</script>
+
+
+
+</script>
+
+</body>
+</html>

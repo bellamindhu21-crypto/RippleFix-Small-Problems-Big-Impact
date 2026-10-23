@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ripple Dependency Graph | RippleFix</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .dependency-page {
+            padding: 40px 6%;
+            background: #f5f8fc;
+            min-height: calc(100vh - 70px);
+        }
+
+        .dependency-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dependency-header h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .dependency-header p {
+            color: #666;
+        }
+
+        .graph-container {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        .graph-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .graph-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            min-width: 950px;
+        }
+
+        .issue-node {
+            width: 160px;
+            min-height: 130px;
+            padding: 18px;
+            border-radius: 18px;
+            text-align: center;
+            border: 2px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .issue-node:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .issue-icon {
+            font-size: 35px;
+            margin-bottom: 8px;
+        }
+
+        .issue-name {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .issue-risk {
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .high-risk {
+            border-color: #ef4444;
+        }
+
+        .medium-risk {
+            border-color: #f59e0b;
+        }
+
+        .low-risk {
+            border-color: #22c55e;
+        }
+
+        .arrow {
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .details-panel {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 16px;
+            display: none;
+        }
+
+        .details-panel.active {
+            display: block;
+        }
+
+        .details-panel h2 {
+            margin-bottom: 10px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .detail-card strong {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .action-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 14px;
+            background: #fff7ed;
+            border-left: 5px solid #f97316;
+        }
+
+        .action-btn {
+            margin-top: 15px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media(max-width: 800px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🌊 <span>RippleFix</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="report.html">Report</a>
+            <a href="issues.html">Issues</a>
+            <a href="map.html">Map</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="dependency-graph.html" class="active">
+                Dependency Graph
+            </a>
+        </div>
+
+        <button onclick="logout()" class="login-btn">
+            Logout
+        </button>
+
+    </nav>
+
+
+    <!-- PAGE -->
+    <main class="dependency-page">
+
+        <div class="dependency-header">
+
+            <h1>🕸️ Ripple Dependency Graph</h1>
+
+            <p>
+                Discover how one civic problem can create a chain of
+                secondary problems.
+            </p>
+
+        </div>
+
+
+        <div class="graph-container">
+
+            <h2 class="graph-title">
+                Example: Water Leakage Ripple
+            </h2>
+
+
+            <div class="graph-flow">
+
+                <!-- NODE 1 -->
+                <div class="issue-node high-risk"
+                     onclick="showIssue('water')">
+
+                    <div class="issue-icon">💧</div>
+
+                    <div class="issue-name">
+                        Water Leakage
+                    </div>
+
+                    <div class="issue-risk">
+                        Risk: 91%
+                    </div>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <!-- NODE 2 -->
+                <div class="issue-node medium-risk"
+                     onclick="showIssue('waterAccumulation')">
+
+                    <div class="issue-icon">🌧️</div>
+
+                    <div class="issue-name">
+                        Water Accumulation
+                    </div>
+
+                    <div class="issue-risk">
+                        Risk: 78%
+                    </div>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <!-- NODE 3 -->
+                <div class="issue-node medium-risk"
+                     onclick="showIssue('roadDamage')">
+
+                    <div class="issue-icon">🛣️</div>
+
+                    <div class="issue-name">
+                        Road Damage
+                    </div>
+
+                    <div class="issue-risk">
+                        Risk: 70%
+                    </div>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <!-- NODE 4 -->
+                <div class="issue-node high-risk"
+                     onclick="showIssue('pothole')">
+
+                    <div class="issue-icon">🚧</div>
+
+                    <div class="issue-name">
+                        Pothole
+                    </div>
+
+                    <div class="issue-risk">
+                        Risk: 86%
+                    </div>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <!-- NODE 5 -->
+                <div class="issue-node high-risk"
+                     onclick="showIssue('traffic')">
+
+                    <div class="issue-icon">🚦</div>
+
+                    <div class="issue-name">
+                        Traffic Problem
+                    </div>
+
+                    <div class="issue-risk">
+                        Risk: 74%
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DETAILS -->
+            <div id="detailsPanel" class="details-panel">
+
+                <h2 id="detailTitle">
+                    Select an issue
+                </h2>
+
+                <p id="detailDescription">
+                    Click any issue above to see its dependency information.
+                </p>
+
+
+                <div class="detail-grid">
+
+                    <div class="detail-card">
+
+                        <strong id="affectedPeople">
+                            -
+                        </strong>
+
+                        People Affected
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <strong id="riskValue">
+                            -
+                        </strong>
+
+                        Future Risk
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <strong id="relatedIssues">
+                            -
+                        </strong>
+
+                        Related Issues
+
+                    </div>
+
+                </div>
+
+
+                <div class="action-box">
+
+                    <strong>
+                        💡 Recommended Intervention
+                    </strong>
+
+                    <p id="recommendedAction">
+                        Select an issue to see the recommended action.
+                    </p>
+
+                    <button class="action-btn"
+                            onclick="simulateFix()">
+
+                        🔮 Simulate Fix
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="js/common.js"></script>
+
+    <script src="js/dependency-graph.js"></script>
+
+</body>
+</html>

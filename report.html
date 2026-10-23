@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Report Issue | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        #reportMap {
+            height: 350px;
+            width: 100%;
+            border-radius: 12px;
+            margin: 15px 0;
+            z-index: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌊 <span>RippleFix</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="report.html"
+           class="active">
+            Report
+        </a>
+
+        <a href="issues.html">
+            Issues
+        </a>
+
+        <a href="map.html">
+            Map
+        </a>
+
+    </div>
+
+    <button onclick="logout()"
+            class="logout-btn">
+
+        Logout
+
+    </button>
+
+</nav>
+
+
+
+<!-- =====================================================
+     REPORT PAGE
+===================================================== -->
+
+<section class="report-page">
+
+
+    <div class="report-heading">
+
+        <span class="eyebrow">
+            SPEAK UP
+        </span>
+
+        <h1>
+            Report a Problem
+        </h1>
+
+        <p>
+            Your report can help make your community
+            safer, cleaner and better.
+        </p>
+
+    </div>
+
+
+
+    <!-- =================================================
+         REPORT CARD
+    ================================================= -->
+
+    <div class="report-card">
+
+        <form id="reportForm">
+
+
+            <!-- =========================================
+                 PROBLEM TITLE
+            ========================================== -->
+
+            <label for="issueTitle">
+                Problem Title
+            </label>
+
+            <input
+                id="issueTitle"
+                type="text"
+                placeholder="Example: Broken streetlight near main gate"
+                required>
+
+
+
+            <!-- =========================================
+                 ISSUE TYPE
+            ========================================== -->
+
+            <label for="issueType">
+                Issue Type
+            </label>
+
+            <select id="issueType" required>
+
+                <option value="">
+                    Select issue type
+                </option>
+
+                <option>Broken Streetlight</option>
+                <option>Water Leakage</option>
+                <option>Pothole</option>
+                <option>Damaged Road</option>
+                <option>Overflowing Garbage</option>
+                <option>Missing Dustbin</option>
+                <option>Broken Bench</option>
+                <option>Traffic Signal Issue</option>
+                <option>Open Manhole</option>
+                <option>Blocked Drain</option>
+                <option>Damaged Footpath</option>
+                <option>Water Supply Issue</option>
+                <option>Illegal Dumping</option>
+                <option>Construction Problem</option>
+                <option>Park Maintenance</option>
+                <option>Public Toilet Issue</option>
+                <option>Stray Animal Issue</option>
+                <option>Other</option>
+
+            </select>
+
+
+
+            <!-- =========================================
+                 LOCATION
+            ========================================== -->
+
+            <label for="location">
+                Problem Location
+            </label>
+
+            <input
+                id="location"
+                type="text"
+                placeholder="Enter problem location"
+                required>
+
+
+            <!-- =========================================
+                 SELECT LOCATION ON MAP
+            ========================================== -->
+
+            <h3>📍 Select Problem Location</h3>
+
+            <p>
+                Click on the map to pin the exact location
+                of the civic issue.
+            </p>
+
+            <div id="reportMap"></div>
+
+
+            <!-- =========================================
+                 LOCATION DISPLAY
+            ========================================== -->
+
+            <div id="locationDisplay"
+                 class="location-display">
+
+                📍 Click on the map to select
+                the problem location.
+
+            </div>
+
+
+
+            <!-- =========================================
+                 PHONE NUMBER
+            ========================================== -->
+
+            <div class="form-group phone-field">
+
+                <label for="citizenPhone">
+
+                    📞 Citizen Phone Number
+
+                </label>
+
+                <input
+                    type="tel"
+                    id="citizenPhone"
+                    name="citizenPhone"
+                    placeholder="Enter 10-digit phone number"
+                    pattern="[0-9]{10}"
+                    maxlength="10"
+                    required
+                >
+
+                <small>
+
+                    Your number will be available only to
+                    authorized administrators for
+                    issue-related communication.
+
+                </small>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 SEVERITY
+            ========================================== -->
+
+            <label for="severity">
+                Severity
+            </label>
+
+            <select id="severity" required>
+
+                <option value="">
+                    Select severity
+                </option>
+
+                <option value="1">
+                    Low
+                </option>
+
+                <option value="2">
+                    Medium
+                </option>
+
+                <option value="3">
+                    High
+                </option>
+
+                <option value="4">
+                    Critical
+                </option>
+
+            </select>
+
+
+
+            <!-- =========================================
+                 FREQUENCY
+            ========================================== -->
+
+            <label for="frequency">
+                Frequency
+            </label>
+
+            <select id="frequency" required>
+
+                <option value="1">
+                    Rare
+                </option>
+
+                <option value="2">
+                    Sometimes
+                </option>
+
+                <option value="3">
+                    Frequent
+                </option>
+
+                <option value="4">
+                    Daily
+                </option>
+
+            </select>
+
+
+
+            <!-- =========================================
+                 PEOPLE AFFECTED
+            ========================================== -->
+
+            <label for="affected">
+                People Affected
+            </label>
+
+            <input
+                id="affected"
+                type="number"
+                min="1"
+                placeholder="Approximate number of people"
+                required>
+
+
+
+            <!-- =========================================
+                 DESCRIPTION
+            ========================================== -->
+
+            <label for="description">
+                Description
+            </label>
+
+            <textarea
+                id="description"
+                rows="5"
+                placeholder="Describe the problem..."
+                required></textarea>
+
+
+
+            <!-- =========================================
+                 PHOTO
+            ========================================== -->
+
+            <label for="photo">
+                Photo Evidence
+            </label>
+
+            <input
+                id="photo"
+                type="file"
+                accept="image/*">
+
+
+
+            <!-- =========================================
+                 SUBMIT
+            ========================================== -->
+
+            <button
+                type="submit"
+                class="form-submit">
+
+                Submit Report 🌊
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="js/common.js"></script>
+
+<!-- Leaflet Map Library -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Existing Report Logic -->
+<script src="js/report.js"></script>
+
+
+<script>
+
+    protectCitizenPage();
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const mapElement = document.getElementById("reportMap");
+
+        if (!mapElement) {
+            console.error("Report map element was not found.");
+            return;
+        }
+
+        if (typeof L === "undefined") {
+            mapElement.innerHTML =
+                "Map could not load. Please check your internet connection.";
+            return;
+        }
+
+        // Initialize the map around Vellore
+        const reportMap = L.map("reportMap").setView(
+            [12.9165, 79.1325],
+            13
+        );
+
+        // Display OpenStreetMap tiles
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(reportMap);
+
+        let selectedMarker = null;
+
+        // Allow citizens to pin a location by clicking the map
+        reportMap.on("click", async function (e) {
+
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            if (selectedMarker) {
+                reportMap.removeLayer(selectedMarker);
+            }
+
+            selectedMarker = L.marker([lat, lng])
+                .addTo(reportMap);
+
+            // Save coordinates using your existing report.js function
+            await selectReportLocation(lat, lng);
+
+            // Fill the location field with the selected place
+            const locationInput =
+                document.getElementById("location");
+
+            if (locationInput && selectedLocationName) {
+                locationInput.value = selectedLocationName;
+            }
+
+            console.log("Selected report coordinates:", lat, lng);
+
+        });
+
+        // Fix map rendering after the page layout loads
+        setTimeout(function () {
+            reportMap.invalidateSize();
+        }, 300);
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Citizen Login | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body class="auth-page">
+
+
+    <div class="auth-layout">
+
+
+        <div class="auth-left">
+
+            <div class="auth-brand">
+                🌊 Ripple<span>Fix</span>
+            </div>
+
+            <h1>
+                Welcome
+                <span>back.</span>
+            </h1>
+
+            <p>
+                Your community needs people like you
+                to speak up about everyday problems.
+            </p>
+
+            <div class="auth-points">
+
+                <div>✓ Report new problems</div>
+                <div>✓ See community reports</div>
+                <div>✓ Track issue status</div>
+                <div>✓ Make an impact</div>
+
+            </div>
+
+        </div>
+
+
+        <div class="auth-card">
+
+            <div class="form-icon">
+                👤
+            </div>
+
+            <div class="form-label">
+                CITIZEN PORTAL
+            </div>
+
+            <h2>
+                Welcome Back
+            </h2>
+
+            <p>
+                Login with your registered credentials.
+            </p>
+
+
+            <form id="loginForm">
+
+                <label>
+                    Username or Email
+                </label>
+
+                <input
+                    type="text"
+                    id="loginUser"
+                    placeholder="Username or email"
+                    required>
+
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter password"
+                    required>
+
+
+                <button type="submit"
+                        class="form-submit">
+
+                    Login to RippleFix →
+
+                </button>
+
+            </form>
+
+
+            <div class="or-line">
+                <span>NEW TO RIPPLEFIX?</span>
+            </div>
+
+
+            <a href="register.html"
+               class="create-account-button">
+
+                ✨ Create New Account
+
+            </a>
+
+
+            <a href="index.html"
+               class="back-link">
+
+                ← Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+<script>
+document.getElementById("loginForm").addEventListener(
+    "submit",
+    async function (e) {
+        e.preventDefault();
+
+        const loginUser = document
+            .getElementById("loginUser")
+            .value.trim();
+
+        const loginPassword = document
+            .getElementById("loginPassword")
+            .value;
+
+        const submitButton = document.querySelector(
+            "#loginForm button[type='submit']"
+        );
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Logging in...";
+
+        try {
+            const response = await fetch(
+                "http://127.0.0.1:5000/api/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        identifier: loginUser,
+                        password: loginPassword
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || "Login failed.");
+                return;
+            }
+
+            // Store basic profile details for existing frontend pages.
+            // Do not store the password in localStorage.
+            localStorage.setItem(
+                "ripplefixLoggedInUser",
+                JSON.stringify(result.user)
+            );
+
+            localStorage.setItem("ripplefixRole", result.user.role);
+
+            alert("Login successful! Welcome to RippleFix.");
+
+            window.location.href = "home.html";
+
+        } catch (error) {
+            console.error("Login error:", error);
+
+            alert(
+                "Cannot connect to the backend. " +
+                "Make sure Flask is running at http://127.0.0.1:5000."
+            );
+
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Login to RippleFix →";
+        }
+    }
+);
+</script>
+</body>
+</html>
+

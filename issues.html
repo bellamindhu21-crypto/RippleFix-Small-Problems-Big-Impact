@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Community Issues | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌊 <span>RippleFix</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="report.html">
+            Report
+        </a>
+
+        <a href="issues.html"
+           class="active">
+            Issues
+        </a>
+
+        <a href="map.html">
+            Map
+        </a>
+
+    </div>
+
+    <button onclick="logout()"
+            class="logout-btn">
+        Logout
+    </button>
+
+</nav>
+
+
+<section class="issues-page">
+
+    <div class="issues-heading">
+
+        <span class="eyebrow">
+            COMMUNITY WATCH
+        </span>
+
+        <h1>
+            Reported Issues
+        </h1>
+
+        <p>
+            Together, we can see problems
+            and track their progress.
+        </p>
+
+    </div>
+
+
+    <div id="issuesContainer"
+         class="issues-container">
+
+    </div>
+
+</section>
+
+
+<script src="js/common.js"></script>
+<script src="js/issues.js"></script>
+
+<script>
+protectCitizenPage();
+loadIssues();
+</script>
+
+</body>
+</html>

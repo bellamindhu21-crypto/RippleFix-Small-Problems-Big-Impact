@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Issue Details | RippleFix</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌊 <span>RippleFix</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="report.html">
+            Report
+        </a>
+
+        <a href="issues.html">
+            Issues
+        </a>
+
+        <a href="map.html">
+            Map
+        </a>
+
+    </div>
+
+    <button onclick="logout()"
+            class="logout-btn">
+        Logout
+    </button>
+
+</nav>
+
+
+<section class="details-page">
+
+    <div class="details-card">
+
+        <span class="eyebrow">
+            ISSUE DETAILS
+        </span>
+
+        <h1>
+            Community Issue
+        </h1>
+
+        <p>
+            Select an issue from the Community Issues page
+            to view its details.
+        </p>
+
+        <a href="issues.html"
+           class="primary-btn">
+
+            ← Back to Issues
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<script src="js/common.js"></script>
+
+<script>
+protectCitizenPage();
+</script>
+```html
+<!-- =========================================
+     RESOLUTION QUALITY
+========================================= -->
+
+<section class="resolution-quality">
+
+    <div class="resolution-header">
+        <div class="resolution-icon">✅</div>
+        <div>
+            <h2>Resolution Quality</h2>
+            <p>Was this problem actually fixed?</p>
+        </div>
+    </div>
+
+    <!-- YES / NO -->
+    <div class="resolution-question">
+        <h3>Was this problem actually fixed?</h3>
+
+        <div class="resolution-buttons">
+            <button class="fixed-btn" onclick="submitResolution(true)">
+                👍 YES, Fixed
+            </button>
+
+            <button class="not-fixed-btn" onclick="submitResolution(false)">
+                👎 NO, Not Fixed
+            </button>
+        </div>
+
+        <p id="resolutionMessage"></p>
+    </div>
+
+
+    <!-- STAR RATING -->
+    <div class="repair-rating">
+
+        <h3>⭐ Rate the repair quality</h3>
+
+        <p>How well was the problem fixed?</p>
+
+        <div class="rating-stars">
+
+            <button onclick="giveRating(1)">★</button>
+            <button onclick="giveRating(2)">★</button>
+            <button onclick="giveRating(3)">★</button>
+            <button onclick="giveRating(4)">★</button>
+            <button onclick="giveRating(5)">★</button>
+
+        </div>
+
+        <p id="ratingResult">No rating submitted yet.</p>
+
+    </div>
+
+
+    <!-- COMMUNITY VERIFICATION -->
+    <div class="community-verification">
+
+        <h3>👥 Community Verification</h3>
+
+        <div class="verification-bar">
+            <div id="verificationProgress"></div>
+        </div>
+
+        <p id="verificationResult">
+            0% community verified
+        </p>
+
+        <div class="vote-count">
+
+            <span id="yesCount">
+                👍 0 Confirmed
+            </span>
+
+            <span id="noCount">
+                👎 0 Rejected
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- FINAL STATUS -->
+    <div id="finalResolutionStatus" class="resolution-status">
+        ⏳ Waiting for community verification
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     RESOLUTION QUALITY JAVASCRIPT
+========================================= -->
+
+<script>
+
+
+// Get current issue ID from URL
+function getResolutionIssueId() {
+
+    const params = new URLSearchParams(window.location.search);
+
+    return params.get("id");
+}
+
+
+
+// Get all issues from localStorage
+function getResolutionIssues() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem("issues")
+        ) || [];
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+
+// Save issues
+function saveResolutionIssues(issues) {
+
+    localStorage.setItem(
+        "issues",
+        JSON.stringify(issues)
+    );
+
+}
+
+
+
+// Submit YES / NO verification
+function submitResolution(isFixed) {
+
+    const issueId = getResolutionIssueId();
+
+    if (!issueId) {
+
+        alert("Issue ID not found.");
+
+        return;
+
+    }
+
+
+    let issues = getResolutionIssues();
+
+
+    const issue = issues.find(
+        item => String(item.id) === String(issueId)
+    );
+
+
+    if (!issue) {
+
+        alert("Issue not found.");
+
+        return;
+
+    }
+
+
+
+    // Create Resolution Quality object
+    if (!issue.resolutionQuality) {
+
+        issue.resolutionQuality = {
+
+            yes: 0,
+
+            no: 0,
+
+            ratings: []
+
+        };
+
+    }
+
+
+
+    // Add vote
+
+    if (isFixed) {
+
+        issue.resolutionQuality.yes++;
+
+        document.getElementById(
+            "resolutionMessage"
+        ).innerHTML =
+            "✅ Thank you! You confirmed that the problem was fixed.";
+
+    } else {
+
+        issue.resolutionQuality.no++;
+
+        document.getElementById(
+            "resolutionMessage"
+        ).innerHTML =
+            "⚠️ Thank you! Your feedback will help reopen the issue if necessary.";
+
+    }
+
+
+
+    // Save
+    saveResolutionIssues(issues);
+
+
+    // Update screen
+    displayResolutionQuality(issue);
+
+}
+
+
+
+// Star rating
+function giveRating(rating) {
+
+    const issueId = getResolutionIssueId();
+
+    if (!issueId) return;
+
+
+    let issues = getResolutionIssues();
+
+
+    const issue = issues.find(
+        item => String(item.id) === String(issueId)
+    );
+
+
+    if (!issue) return;
+
+
+
+    // Create object if required
+    if (!issue.resolutionQuality) {
+
+        issue.resolutionQuality = {
+
+            yes: 0,
+
+            no: 0,
+
+            ratings: []
+
+        };
+
+    }
+
+
+
+    // Add rating
+    issue.resolutionQuality.ratings.push(rating);
+
+
+    saveResolutionIssues(issues);
+
+
+
+    // Display rating
+
+    document.getElementById(
+        "ratingResult"
+    ).innerHTML =
+        "You rated this repair <strong>"
+        + rating +
+        "/5 ⭐</strong>";
+
+
+
+    // Highlight stars
+
+    const stars =
+        document.querySelectorAll(
+            ".rating-stars button"
+        );
+
+
+    stars.forEach(
+        (star, index) => {
+
+            if (index < rating) {
+
+                star.classList.add("selected");
+
+            } else {
+
+                star.classList.remove("selected");
+
+            }
+
+        }
+    );
+
+}
+
+
+
+// Display Resolution Quality
+function displayResolutionQuality(issue) {
+
+    if (!issue.resolutionQuality) {
+
+        issue.resolutionQuality = {
+
+            yes: 0,
+
+            no: 0,
+
+            ratings: []
+
+        };
+
+    }
+
+
+
+    const yes =
+        issue.resolutionQuality.yes || 0;
+
+
+    const no =
+        issue.resolutionQuality.no || 0;
+
+
+    const total = yes + no;
+
+
+
+    let percentage = 0;
+
+
+    if (total > 0) {
+
+        percentage =
+            Math.round(
+                (yes / total) * 100
+            );
+
+    }
+
+
+
+    // Update YES count
+    document.getElementById(
+        "yesCount"
+    ).innerHTML =
+        "👍 " + yes + " Confirmed";
+
+
+
+    // Update NO count
+    document.getElementById(
+        "noCount"
+    ).innerHTML =
+        "👎 " + no + " Rejected";
+
+
+
+    // Update progress bar
+    document.getElementById(
+        "verificationProgress"
+    ).style.width =
+        percentage + "%";
+
+
+
+    // Update percentage
+    document.getElementById(
+        "verificationResult"
+    ).innerHTML =
+        percentage +
+        "% community verified";
+
+
+
+    const status =
+        document.getElementById(
+            "finalResolutionStatus"
+        );
+
+
+
+    // Determine final status
+
+    if (total < 3) {
+
+        status.innerHTML =
+            "⏳ Waiting for more community votes";
+
+        status.className =
+            "resolution-status waiting";
+
+    }
+
+    else if (percentage < 50) {
+
+        status.innerHTML =
+            "🔄 Issue Reopened — Community says it is not properly fixed";
+
+        status.className =
+            "resolution-status reopened";
+
+
+
+        // Update actual issue status
+
+        issue.status = "reopened";
+
+        saveResolutionIssues(
+            getResolutionIssues()
+        );
+
+    }
+
+    else if (percentage >= 70) {
+
+        status.innerHTML =
+            "✅ Verified Fixed — Community confirmed the repair";
+
+        status.className =
+            "resolution-status verified";
+
+
+
+        issue.status =
+            "verified-fixed";
+
+        saveResolutionIssues(
+            getResolutionIssues()
+        );
+
+    }
+
+    else {
+
+        status.innerHTML =
+            "🟡 Partially Verified — More community feedback needed";
+
+        status.className =
+            "resolution-status partial";
+
+    }
+
+}
+
+
+
+// Load Resolution Quality when page opens
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const issueId =
+            getResolutionIssueId();
+
+
+        if (!issueId) return;
+
+
+        const issues =
+            getResolutionIssues();
+
+
+        const issue =
+            issues.find(
+                item =>
+                String(item.id) ===
+                String(issueId)
+            );
+
+
+        if (issue) {
+
+            displayResolutionQuality(
+                issue
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+```html
+<!-- =========================================
+     RESOLUTION QUALITY
+========================================= -->
+
+<section class="resolution-quality">
+
+    <div class="resolution-header">
+        <div class="resolution-icon">✅</div>
+        <div>
+            <h2>Resolution Quality</h2>
+            <p>Was this problem actually fixed?</p>
+        </div>
+    </div>
+
+    <!-- YES / NO -->
+    <div class="resolution-question">
+        <h3>Was this problem actually fixed?</h3>
+
+        <div class="resolution-buttons">
+            <button class="fixed-btn" onclick="submitResolution(true)">
+                👍 YES, Fixed
+            </button>
+
+            <button class="not-fixed-btn" onclick="submitResolution(false)">
+                👎 NO, Not Fixed
+            </button>
+        </div>
+
+        <p id="resolutionMessage"></p>
+    </div>
+
+
+    <!-- STAR RATING -->
+    <div class="repair-rating">
+
+        <h3>⭐ Rate the repair quality</h3>
+
+        <p>How well was the problem fixed?</p>
+
+        <div class="rating-stars">
+
+            <button onclick="giveRating(1)">★</button>
+            <button onclick="giveRating(2)">★</button>
+            <button onclick="giveRating(3)">★</button>
+            <button onclick="giveRating(4)">★</button>
+            <button onclick="giveRating(5)">★</button>
+
+        </div>
+
+        <p id="ratingResult">No rating submitted yet.</p>
+
+    </div>
+
+
+    <!-- COMMUNITY VERIFICATION -->
+    <div class="community-verification">
+
+        <h3>👥 Community Verification</h3>
+
+        <div class="verification-bar">
+            <div id="verificationProgress"></div>
+        </div>
+
+        <p id="verificationResult">
+            0% community verified
+        </p>
+
+        <div class="vote-count">
+
+            <span id="yesCount">
+                👍 0 Confirmed
+            </span>
+
+            <span id="noCount">
+                👎 0 Rejected
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- FINAL STATUS -->
+    <div id="finalResolutionStatus" class="resolution-status">
+        ⏳ Waiting for community verification
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     RESOLUTION QUALITY JAVASCRIPT
+========================================= -->
+
+<script>
+
+
+// Get current issue ID from URL
+function getResolutionIssueId() {
+
+    const params = new URLSearchParams(window.location.search);
+
+    return params.get("id");
+}
+
+
+
+// Get all issues from localStorage
+function getResolutionIssues() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem("issues")
+        ) || [];
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+
+// Save issues
+function saveResolutionIssues(issues) {
+
+    localStorage.setItem(
+        "issues",
+        JSON.stringify(issues)
+    );
+
+}
+
+
+
+// Submit YES / NO verification
+function submitResolution(isFixed) {
+
+    const issueId = getResolutionIssueId();
+
+    if (!issueId) {
+
+        alert("Issue ID not found.");
+
+        return;
+
+    }
+
+
+    let issues = getResolutionIssues();
+
+
+    const issue = issues.find(
+        item => String(item.id) === String(issueId)
+    );
+
+
+    if (!issue) {
+
+        alert("Issue not found.");
+
+        return;
+
+    }
+
+
+
+    // Create Resolution Quality object
+    if (!issue.resolutionQuality) {
+
+        issue.resolutionQuality = {
+
+            yes: 0,
+
+            no: 0,
+
+            ratings: []
+
+        };
+
+    }
+
+
+
+    // Add vote
+
+    if (isFixed) {
+
+        issue.resolutionQuality.yes++;
+
+        document.getElementById(
+            "resolutionMessage"
+        ).innerHTML =
+            "✅ Thank you! You confirmed that the problem was fixed.";
+
+    } else {
+
+        issue.resolutionQuality.no++;
+
+        document.getElementById(
+            "resolutionMessage"
+        ).innerHTML =
+            "⚠️ Thank you! Your feedback will help reopen the issue if necessary.";
+
+    }
+
+
+
+    // Save
+    saveResolutionIssues(issues);
+
+
+    // Update screen
+    displayResolutionQuality(issue);
+
+}
+
+
+
+// Star rating
+function giveRating(rating) {
+
+    const issueId = getResolutionIssueId();
+
+    if (!issueId) return;
+
+
+    let issues = getResolutionIssues();
+
+
+    const issue = issues.find(
+        item => String(item.id) === String(issueId)
+    );
+
+
+    if (!issue) return;
+
+
+
+    // Create object if required
+    if (!issue.resolutionQuality) {
+
+        issue.resolutionQuality = {
+
+            yes: 0,
+
+            no: 0,
+
+            ratings: []
+
+        };
+
+    }
+
+
+
+    // Add rating
+    issue.resolutionQuality.ratings.push(rating);
+
+
+    saveResolutionIssues(issues);
+
+
+
+    // Display rating
+
+    document.getElementById(
+        "ratingResult"
+    ).innerHTML =
+        "You rated this repair <strong>"
+        + rating +
+        "/5 ⭐</strong>";
+
+
+
+    // Highlight stars
+
+    const stars =
+        document.querySelectorAll(
+            ".rating-stars button"
+        );
+
+
+    stars.forEach(
+        (star, index) => {
+
+            if (index < rating) {
+
+                star.classList.add("selected");
+
+            } else {
+
+                star.classList.remove("selected");
+
+            }
+
+        }
+    );
+
+}
+
+
+
+// Display Resolution Quality
+function displayResolutionQuality(issue) {
+
+    if (!issue.resolutionQuality) {
+
+        issue.resolutionQuality = {
+
+            yes: 0,
+
+            no: 0,
+
+            ratings: []
+
+        };
+
+    }
+
+
+
+    const yes =
+        issue.resolutionQuality.yes || 0;
+
+
+    const no =
+        issue.resolutionQuality.no || 0;
+
+
+    const total = yes + no;
+
+
+
+    let percentage = 0;
+
+
+    if (total > 0) {
+
+        percentage =
+            Math.round(
+                (yes / total) * 100
+            );
+
+    }
+
+
+
+    // Update YES count
+    document.getElementById(
+        "yesCount"
+    ).innerHTML =
+        "👍 " + yes + " Confirmed";
+
+
+
+    // Update NO count
+    document.getElementById(
+        "noCount"
+    ).innerHTML =
+        "👎 " + no + " Rejected";
+
+
+
+    // Update progress bar
+    document.getElementById(
+        "verificationProgress"
+    ).style.width =
+        percentage + "%";
+
+
+
+    // Update percentage
+    document.getElementById(
+        "verificationResult"
+    ).innerHTML =
+        percentage +
+        "% community verified";
+
+
+
+    const status =
+        document.getElementById(
+            "finalResolutionStatus"
+        );
+
+
+
+    // Determine final status
+
+    if (total < 3) {
+
+        status.innerHTML =
+            "⏳ Waiting for more community votes";
+
+        status.className =
+            "resolution-status waiting";
+
+    }
+
+    else if (percentage < 50) {
+
+        status.innerHTML =
+            "🔄 Issue Reopened — Community says it is not properly fixed";
+
+        status.className =
+            "resolution-status reopened";
+
+
+
+        // Update actual issue status
+
+        issue.status = "reopened";
+
+        saveResolutionIssues(
+            getResolutionIssues()
+        );
+
+    }
+
+    else if (percentage >= 70) {
+
+        status.innerHTML =
+            "✅ Verified Fixed — Community confirmed the repair";
+
+        status.className =
+            "resolution-status verified";
+
+
+
+        issue.status =
+            "verified-fixed";
+
+        saveResolutionIssues(
+            getResolutionIssues()
+        );
+
+    }
+
+    else {
+
+        status.innerHTML =
+            "🟡 Partially Verified — More community feedback needed";
+
+        status.className =
+            "resolution-status partial";
+
+    }
+
+}
+
+
+
+// Load Resolution Quality when page opens
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const issueId =
+            getResolutionIssueId();
+
+
+        if (!issueId) return;
+
+
+        const issues =
+            getResolutionIssues();
+
+
+        const issue =
+            issues.find(
+                item =>
+                String(item.id) ===
+                String(issueId)
+            );
+
+
+        if (issue) {
+
+            displayResolutionQuality(
+                issue
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- ================================
+     RESOLUTION QUALITY
+================================= -->
+<section class="resolution-quality">
+
+    <div class="resolution-header">
+        <span class="resolution-icon">✅</span>
+        <div>
+            <h2>Resolution Quality</h2>
+            <p>Was this problem actually fixed?</p>
+        </div>
+    </div>
+
+    <!-- YES / NO -->
+    <div class="resolution-question">
+        <h3>Was this problem actually fixed?</h3>
+
+        <div class="resolution-buttons">
+            <button class="fixed-yes" onclick="verifyResolution(true)">
+                👍 YES, Fixed
+            </button>
+
+            <button class="fixed-no" onclick="verifyResolution(false)">
+                👎 NO, Not Fixed
+            </button>
+        </div>
+    </div>
+
+    <!-- STAR RATING -->
+    <div class="repair-rating">
+
+        <h3>⭐ Rate the repair quality</h3>
+
+        <div class="stars">
+            <button onclick="rateRepair(1)">★</button>
+            <button onclick="rateRepair(2)">★</button>
+            <button onclick="rateRepair(3)">★</button>
+            <button onclick="rateRepair(4)">★</button>
+            <button onclick="rateRepair(5)">★</button>
+        </div>
+
+        <p id="ratingText">
+            No rating yet
+        </p>
+
+    </div>
+
+    <!-- COMMUNITY VERIFICATION -->
+    <div class="community-verification">
+
+        <h3>👥 Community Verification</h3>
+
+        <div class="verification-bar">
+            <div id="verificationProgress"></div>
+        </div>
+
+        <p id="verificationText">
+            0% community verified
+        </p>
+
+    </div>
+
+    <!-- STATUS -->
+    <div class="resolution-status">
+
+        <h3>Current Resolution Status</h3>
+
+        <span id="resolutionStatus">
+            ⏳ Awaiting community verification
+        </span>
+
+    </div>
+
+</section>
+</body>
+</html>

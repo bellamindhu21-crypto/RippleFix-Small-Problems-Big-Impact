@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Authority Dashboard | RippleFix</title>
+
+     <link rel="stylesheet"
+          href="css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+
+</head>
+
+
+<body class="admin-dashboard">
+
+
+<!-- =====================================================
+     ADMIN NAVBAR
+===================================================== -->
+
+<nav class="admin-navbar">
+
+    <div class="logo">
+
+        🌊 <span>RippleFix</span>
+
+        <small>
+            AUTHORITY
+        </small>
+
+    </div>
+
+
+    <div class="admin-nav-title">
+
+        🛡️ Authority Control Center
+
+    </div>
+
+
+    <button
+        onclick="logout()"
+        class="logout-btn">
+
+        Logout
+
+    </button>
+
+</nav>
+
+
+
+<!-- =====================================================
+     DASHBOARD PAGE
+===================================================== -->
+
+<section class="dashboard-page">
+
+
+    <!-- =================================================
+         DASHBOARD HEADING
+    ================================================== -->
+
+    <div class="dashboard-heading">
+
+        <div>
+
+            <span class="eyebrow">
+                ADMINISTRATOR
+            </span>
+
+            <h1>
+                Command Center
+            </h1>
+
+            <p>
+                Monitor. Prioritize. Resolve.
+            </p>
+
+        </div>
+
+
+        <div class="live-indicator">
+
+            <span></span>
+
+            SYSTEM LIVE
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         STATISTICS
+    ================================================== -->
+
+    <div class="dashboard-stats">
+
+
+        <!-- TOTAL -->
+
+        <div class="stat-card">
+
+            <span>
+                TOTAL REPORTS
+            </span>
+
+            <strong id="totalIssues">
+                0
+            </strong>
+
+            <small>
+                All submitted issues
+            </small>
+
+        </div>
+
+
+        <!-- REPORTED -->
+
+        <div class="stat-card">
+
+            <span>
+                REPORTED
+            </span>
+
+            <strong id="reportedIssues">
+                0
+            </strong>
+
+            <small>
+                Awaiting action
+            </small>
+
+        </div>
+
+
+        <!-- IN PROGRESS -->
+
+        <div class="stat-card">
+
+            <span>
+                IN PROGRESS
+            </span>
+
+            <strong id="progressIssues">
+                0
+            </strong>
+
+            <small>
+                Currently being solved
+            </small>
+
+        </div>
+
+
+        <!-- RESOLVED -->
+
+        <div class="stat-card resolved-stat">
+
+            <span>
+                RESOLVED
+            </span>
+
+            <strong id="resolvedIssues">
+                0
+            </strong>
+
+            <small>
+                Problems marked solved
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         COMMUNITY REPORTS
+    ================================================== -->
+
+    <section class="management-card">
+
+
+        <div class="management-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    ISSUE MANAGEMENT
+                </span>
+
+                <h2>
+                    Community Reports
+                </h2>
+
+                <p>
+                    Review and manage issues submitted
+                    by citizens.
+                </p>
+
+            </div>
+
+
+            <select
+                id="filterStatus"
+                onchange="loadDashboard()">
+
+                <option value="All" selected>
+                    All Issues
+                </option>
+
+                <option value="Reported">
+                    Reported
+                </option>
+
+                <option value="In Progress">
+                    In Progress
+                </option>
+
+                <option value="Resolved">
+                    Resolved
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ACTUAL CITIZEN ISSUES -->
+
+        <div
+            id="adminIssues"
+            class="admin-issues">
+
+        </div>
+
+
+    </section>
+    <!-- =====================================================
+     ADMIN CIVIC ISSUE LOCATION MAP
+===================================================== -->
+
+    <section class="admin-map-card">
+
+    <div class="admin-map-header">
+
+        <div>
+
+            <span class="eyebrow">
+                LIVE LOCATION MONITORING
+            </span>
+
+            <h2>
+                📍 Civic Issue Location Map
+            </h2>
+
+            <p>
+                Identify reported civic problems and their
+                exact locations.
+            </p>
+
+        </div>
+
+        <div class="map-count">
+
+            <span id="mapIssueCount">0</span>
+
+            Issues Mapped
+
+        </div>
+
+    </div>
+
+
+    <!-- MAP -->
+
+    <div id="adminIssueMap"></div>
+
+
+    <!-- MAP LEGEND -->
+
+    <div class="admin-map-legend">
+
+        <div>
+            <span class="legend-dot reported"></span>
+            Reported
+        </div>
+
+        <div>
+            <span class="legend-dot progress"></span>
+            In Progress
+        </div>
+
+        <div>
+            <span class="legend-dot resolved"></span>
+            Resolved
+        </div>
+
+    </div>
+
+</section>
+
+
+
+    <!-- =================================================
+         SILENT PROBLEM DETECTOR
+         FIRST
+    ================================================== -->
+
+    <section class="silent-detector">
+
+
+        <div class="silent-header">
+
+
+            <div>
+
+                <span class="silent-label">
+                    INTELLIGENT COMMUNITY WATCH
+                </span>
+
+
+                <h2>
+                    🕵️ Silent Problem Detector
+                </h2>
+
+
+                <p>
+                    Detect possible civic problems that
+                    may be under-reported by the community.
+                </p>
+
+            </div>
+
+
+            <div class="silent-status">
+
+                <span class="silent-dot"></span>
+
+                ACTIVE
+
+            </div>
+
+        </div>
+
+
+        <!-- JS WILL INSERT SILENT PROBLEMS -->
+
+        <div
+            id="silentProblems"
+            class="silent-problems">
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         RIPPLE DEPENDENCY GRAPH
+         SECOND
+    ================================================== -->
+
+    <section class="ripple-dashboard-section">
+
+
+        <!-- HEADER -->
+
+        <div class="ripple-dashboard-header">
+
+
+            <div>
+
+                <span class="ripple-dashboard-label">
+                    CIVIC CONNECTION INTELLIGENCE
+                </span>
+
+
+                <h2>
+                    🕸️ Ripple Dependency Graph
+                </h2>
+
+
+                <p>
+                    Discover how one civic problem can
+                    trigger other problems across your
+                    community.
+                </p>
+
+            </div>
+
+
+            <div class="ripple-live-status">
+
+                <span></span>
+
+                LIVE ANALYSIS
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             RIPPLE CHAIN
+        ================================================== -->
+
+        <div class="ripple-preview">
+
+
+            <div class="ripple-node water">
+
+                <span class="node-icon">
+                    💧
+                </span>
+
+                <strong>
+                    Water Leakage
+                </strong>
+
+                <small>
+                    Root Problem
+                </small>
+
+            </div>
+
+
+            <div class="ripple-arrow">
+                →
+            </div>
+
+
+            <div class="ripple-node">
+
+                <span class="node-icon">
+                    🌧️
+                </span>
+
+                <strong>
+                    Water Accumulation
+                </strong>
+
+                <small>
+                    Secondary Effect
+                </small>
+
+            </div>
+
+
+            <div class="ripple-arrow">
+                →
+            </div>
+
+
+            <div class="ripple-node">
+
+                <span class="node-icon">
+                    🛣️
+                </span>
+
+                <strong>
+                    Road Damage
+                </strong>
+
+                <small>
+                    Infrastructure Risk
+                </small>
+
+            </div>
+
+
+            <div class="ripple-arrow">
+                →
+            </div>
+
+
+            <div class="ripple-node">
+
+                <span class="node-icon">
+                    🚧
+                </span>
+
+                <strong>
+                    Pothole
+                </strong>
+
+                <small>
+                    Safety Risk
+                </small>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             RIPPLE STATISTICS
+        ================================================== -->
+
+        <div class="ripple-info-grid">
+
+
+            <div class="ripple-info-card">
+
+                <span class="ripple-info-icon">
+                    👥
+                </span>
+
+                <div>
+
+                    <strong id="ripplePeople">
+                        0
+                    </strong>
+
+                    <small>
+                        People potentially affected
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="ripple-info-card">
+
+                <span class="ripple-info-icon">
+                    ⚠️
+                </span>
+
+                <div>
+
+                    <strong id="rippleRisk">
+                        0%
+                    </strong>
+
+                    <small>
+                        Future escalation risk
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="ripple-info-card">
+
+                <span class="ripple-info-icon">
+                    🔗
+                </span>
+
+                <div>
+
+                    <strong id="rippleConnections">
+                        0
+                    </strong>
+
+                    <small>
+                        Connected problems
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             RIPPLE ACTION
+        ================================================== -->
+
+        <div class="ripple-dashboard-action">
+
+
+            <div>
+
+                <strong>
+                    🔮 Predict the Ripple Effect
+                </strong>
+
+                <p>
+                    Explore how fixing one problem can
+                    prevent multiple secondary civic problems.
+                </p>
+
+            </div>
+
+
+            <a
+                href="dependency-graph.html"
+                class="ripple-explore-btn">
+
+                Explore Ripple Chain →
+
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="js/common.js"></script>
+
+<script src="js/dashboard.js"></script>
+
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script src="js/admin-map.js"></script>
+
+<script>
+    protectAdminPage();
+
+    setTimeout(function () {
+        if (typeof loadAdminIssueMap === "function") {
+            loadAdminIssueMap();
+        }
+    }, 500);
+</script>
+</body>
+
+</html>
